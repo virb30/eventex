@@ -3,6 +3,7 @@
 Sistema de Eventos encomendado pela Morena.
 
 [![Build Status](https://travis-ci.org/virb30/eventex.svg?branch=master)](https://travis-ci.org/virb30/eventex)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ee9fa56c431545c78efbc0497cc2a9e3)](https://www.codacy.com/gh/virb30/eventex/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=virb30/eventex&amp;utm_campaign=Badge_Grade)
 
 ## Como desenvolver?
 
