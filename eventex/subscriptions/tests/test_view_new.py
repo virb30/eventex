@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.core import mail
 from django.test import TestCase
 from django.shortcuts import resolve_url as r
 from eventex.subscriptions.forms import SubscriptionForm
 from eventex.subscriptions.models import Subscription
+from hashids import Hashids
 
 
 class SubscriptionsNewGet(TestCase):
@@ -44,11 +46,12 @@ class SubscriptionsNewPostValid(TestCase):
         data = dict(name='Vinicius Boscoa', cpf='12345678901',
                     email='valid@email.com', phone='99-99999-9999')
         self.resp = self.client.post(r('subscriptions:new'), data)
+        self.hashids = Hashids(salt=settings.HASH_SALT)
 
     def test_post(self):
         """Valid POST should redirect to /inscricao/"""
         self.assertEqual(302, self.resp.status_code)
-        self.assertRedirects(self.resp, r('subscriptions:detail', 1))
+        self.assertRedirects(self.resp, r('subscriptions:detail', self.hashids.encode(1)))
 
     def test_send_subscribe_email(self):
         self.assertEqual(1, len(mail.outbox))

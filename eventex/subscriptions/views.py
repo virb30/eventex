@@ -5,6 +5,7 @@ from django.shortcuts import render, resolve_url as r
 from django.template.loader import render_to_string
 from eventex.subscriptions.forms import SubscriptionForm
 from eventex.subscriptions.models import Subscription
+from hashids import Hashids
 
 
 def new(request):
@@ -32,12 +33,12 @@ def create(request):
                subscription.email,
                'subscriptions/subscription_email.txt',
                {'subscription': subscription})
+    return HttpResponseRedirect(r('subscriptions:detail', _hash_pk(subscription.pk)))
 
-    return HttpResponseRedirect(r('subscriptions:detail', subscription.pk))
 
-
-def detail(request, pk):
+def detail(request, hash_pk):
     try:
+        pk = _unhash_pk(hash_pk)
         subscription = Subscription.objects.get(pk=pk)
     except Subscription.DoesNotExist:
         raise Http404
@@ -47,3 +48,19 @@ def detail(request, pk):
 def _send_mail(subject, from_, to, template_name, context):
     body = render_to_string(template_name, context)
     mail.send_mail(subject, body, from_, [from_, to])
+
+
+def _hash():
+    hashids = Hashids(salt=settings.HASH_SALT)
+    return hashids
+
+
+def _hash_pk(pk):
+    hasher = _hash()
+    return hasher.encode(pk)
+
+
+def _unhash_pk(hashed):
+    hasher = _hash()
+    decoded = hasher.decode(hashed)
+    return decoded[0] if decoded else 0
