@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.db import models
+from django.shortcuts import resolve_url as r
+from hashids import Hashids
 from eventex.subscriptions.validators import validate_cpf
 
 
@@ -17,3 +20,7 @@ class Subscription(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        hashids = Hashids(salt=settings.HASH_SALT)
+        return r('subscriptions:detail', hashids.encode(self.pk))
