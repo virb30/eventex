@@ -1,8 +1,8 @@
-from django.conf import settings
-from django.test import TestCase
 from django.shortcuts import resolve_url as r
+from django.test import TestCase
+
 from eventex.subscriptions.models import Subscription
-from hashids import Hashids
+from eventex.subscriptions.services import make_hash
 
 
 class SubscriptionDetailGet(TestCase):
@@ -13,8 +13,7 @@ class SubscriptionDetailGet(TestCase):
             email='valid@email.com',
             phone='99-99999-9999'
         )
-        hashids = Hashids(salt=settings.HASH_SALT)
-        self.resp = self.client.get(r('subscriptions:detail', hashids.encode(self.obj.pk)))
+        self.resp = self.client.get(r('subscriptions:detail', make_hash(self.obj.pk)))
 
     def test_get(self):
         self.assertEqual(200, self.resp.status_code)

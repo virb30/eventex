@@ -1,11 +1,11 @@
-from django.conf import settings
 from django.db import models
 from django.shortcuts import resolve_url as r
-from hashids import Hashids
 from eventex.subscriptions.validators import validate_cpf
+from hashid_field import HashidAutoField
 
 
 class Subscription(models.Model):
+    id = HashidAutoField(primary_key=True, allow_int_lookup=True)
     name = models.CharField('nome', max_length=100)
     cpf = models.CharField('CPF', max_length=11, validators=[validate_cpf])
     email = models.EmailField('e-mail', blank=True)
@@ -22,5 +22,4 @@ class Subscription(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        hashids = Hashids(salt=settings.HASH_SALT)
-        return r('subscriptions:detail', hashids.encode(self.pk))
+        return r('subscriptions:detail', self.pk)

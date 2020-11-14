@@ -1,9 +1,8 @@
 from datetime import datetime
-from django.conf import settings
-from django.test import TestCase
 from django.shortcuts import resolve_url as r
+from django.test import TestCase
 from eventex.subscriptions.models import Subscription
-from hashids import Hashids
+from eventex.subscriptions.services import make_hash
 
 
 class SubscriptionModelText(TestCase):
@@ -14,7 +13,6 @@ class SubscriptionModelText(TestCase):
             email='valid@email.com',
             phone='99-99999-9999'
         )
-        self.hashids = Hashids(salt=settings.HASH_SALT)
         self.obj.save()
 
     def test_create(self):
@@ -32,8 +30,5 @@ class SubscriptionModelText(TestCase):
         self.assertEqual(False, self.obj.paid)
 
     def test_get_absolute_url(self):
-        url = r('subscriptions:detail', self.hashids.encode(self.obj.pk))
+        url = r('subscriptions:detail', make_hash(self.obj.pk))
         self.assertEqual(url, self.obj.get_absolute_url())
-
-
-

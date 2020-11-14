@@ -136,4 +136,5 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 # Hashids configuration
-HASH_SALT = config('HASH_SALT')
+HASHID_FIELD_SALT = config('HASH_SALT')
+HASHID_MIN_LENGTH = config('HASH_LENGTH', default=7)
